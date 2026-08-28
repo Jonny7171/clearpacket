@@ -1,3 +1,5 @@
+import { env } from 'cloudflare:workers';
+
 const DWS_ENDPOINT = 'https://api.nutrient.io/build';
 const MAX_FILE_SIZE = 12 * 1024 * 1024;
 
@@ -46,6 +48,10 @@ const demoResult = {
   completedAt: new Date().toISOString(),
 };
 
+function dwsApiKey() {
+  return (env as unknown as { DWS_API_KEY?: string }).DWS_API_KEY || process.env.DWS_API_KEY;
+}
+
 function jsonError(error: string, status: number) {
   return Response.json({ error }, { status });
 }
@@ -80,6 +86,13 @@ function collectPreferredText(value: unknown, preferred: string[] = [], fallback
   return { preferred, fallback };
 }
 
+function normalizeDocumentText(text: string) {
+  return text
+    .replace(/\r/g, '')
+    .replace(/\u00a0/g, ' ')
+    .replace(/([A-Z]{2,5})\s*-\s*(\d{2,8})/g, '$1-$2');
+}
+
 async function extractWithDws(role: DocumentRole, file: File, apiKey: string): Promise<ExtractedDocument> {
   const instructions = {
     parts: [{ file: 'document' }],
@@ -108,7 +121,7 @@ async function extractWithDws(role: DocumentRole, file: File, apiKey: string): P
 
   const raw = await response.json() as unknown;
   const collected = collectPreferredText(raw);
-  const text = (collected.preferred.length ? collected.preferred : collected.fallback).join('\n');
+  const text = normalizeDocumentText((collected.preferred.length ? collected.preferred : collected.fallback).join('\n'));
   return { role, text, raw };
 }
 
@@ -196,7 +209,7 @@ export async function POST(request: Request) {
       files[role] = value;
     }
 
-    const apiKey = process.env.DWS_API_KEY;
+    const apiKey = dwsApiKey();
     if (!apiKey) {
       if (isDemoPacket(files)) return Response.json(demoResult);
       return jsonError('Live extraction is not configured yet. Use the demo packet or add DWS_API_KEY.', 503);

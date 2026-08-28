@@ -16,7 +16,7 @@ The demo packet contains a subtle but costly error. The invoice bills 12 protect
 
 The app uses Nutrient Document Web Services through the Processor API. Each PDF is sent to the JSON content extraction pipeline with plain text, structured text, key-value pair, and table extraction enabled.
 
-The server normalizes the extracted evidence and runs deterministic matching rules. The matching layer is intentionally separate from extraction. A language model is not allowed to invent a pass, a failure, or a dollar amount. The interface then routes only exceptions to a reviewer and records the final choice with the extraction engine, source document names, checks, values, and timestamp.
+The server normalizes the extracted evidence and runs deterministic matching rules. The matching layer is intentionally separate from extraction. A language model is not allowed to invent a pass, a failure, or a dollar amount. The interface then routes only exceptions to a reviewer and records the final choice with the extraction engine, source document names, checks, values, and timestamp. Nutrient DWS converts that audit record into a polished PDF.
 
 The product is built with React, TypeScript, and a server-side API route. Source PDFs and the Nutrient API key never enter client-side storage.
 
@@ -31,6 +31,7 @@ We also had to keep the demo useful without pretending a local fallback was Nutr
 - The reviewer sees only the exception, not another dashboard full of extracted fields.
 - The $18.40 overage is independently calculated from the quantity variance and unit price.
 - Every human decision can be exported with the source filenames and verification evidence.
+- Nutrient DWS handles both source-document extraction and the final audit PDF.
 - The app is usable on desktop and mobile and includes a complete fictional document packet.
 
 ## What we learned
@@ -43,7 +44,7 @@ The strongest document workflow is not purely automatic. Automation should handl
 - Duplicate invoice detection across packets
 - Approval routing based on dollar impact
 - ERP export after review
-- A signed PDF audit packet generated with Nutrient DWS
+- Signed approval certificates for completed audit packets
 
 ## Submission fields to complete
 

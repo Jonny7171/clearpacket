@@ -1,3 +1,5 @@
+import { env } from 'cloudflare:workers';
+
 const DWS_ENDPOINT = 'https://api.nutrient.io/build';
 
 type AuditPayload = {
@@ -23,6 +25,10 @@ type AuditPayload = {
     decidedAt?: string;
   } | null;
 };
+
+function dwsApiKey() {
+  return (env as unknown as { DWS_API_KEY?: string }).DWS_API_KEY || process.env.DWS_API_KEY;
+}
 
 function escapeHtml(value: unknown) {
   return String(value ?? '')
@@ -57,7 +63,7 @@ function auditHtml(audit: AuditPayload) {
         @page { size: Letter; margin: 0; }
         * { box-sizing: border-box; }
         body { margin: 0; color: #17221c; background: #f5f3eb; font-family: Arial, Helvetica, sans-serif; }
-        .page { min-height: 11in; padding: 0.55in 0.62in; }
+        .page { position: relative; height: 11in; padding: 0.55in 0.62in; }
         .top { display: flex; justify-content: space-between; align-items: center; padding-bottom: 18px; border-bottom: 2px solid #17221c; }
         .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
         .packet { padding: 7px 10px; border: 1px solid #17221c; border-radius: 20px; font-size: 10px; font-weight: 700; }
@@ -82,7 +88,7 @@ function auditHtml(audit: AuditPayload) {
         .decision { margin-top: 18px; padding: 17px; border: 1px solid #17221c; border-radius: 12px; background: #d7ff52; }
         .decision strong { display: block; margin: 6px 0; font-size: 17px; }
         .decision p { margin: 0; font-size: 10px; line-height: 1.5; }
-        .footer { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 12px; border-top: 1px solid #17221c; color: #667169; font-size: 8px; text-transform: uppercase; letter-spacing: 0.7px; }
+        .footer { position: absolute; right: 0.62in; bottom: 0.35in; left: 0.62in; display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid #17221c; color: #667169; font-size: 8px; text-transform: uppercase; letter-spacing: 0.7px; }
       </style>
     </head>
     <body>
@@ -134,7 +140,7 @@ export async function POST(request: Request) {
       return Response.json({ error: 'The audit record is incomplete.' }, { status: 400 });
     }
 
-    const apiKey = process.env.DWS_API_KEY;
+    const apiKey = dwsApiKey();
     if (!apiKey) {
       return new Response(JSON.stringify(audit, null, 2), {
         headers: {
