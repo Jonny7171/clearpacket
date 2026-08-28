@@ -48,8 +48,10 @@ The strongest document workflow is not purely automatic. Automation should handl
 
 ## Submission fields to complete
 
-- Public app URL: pending public deployment approval
-- Public source repository: pending repository approval
-- Demo video: use the 60-second script in `docs/demo-video-script.md`
+- Public app URL: https://clearpacket.hdjskndf.chatgpt.site
+- Public source repository: https://github.com/Jonny7171/clearpacket
+- Project image: `output/devpost/clearpacket-cover.jpg`
+- Image gallery: `output/devpost/clearpacket-demo-overview.jpg` and `output/devpost/clearpacket-human-review.jpg`
+- Demo video: optional; use the 60-second script in `docs/demo-video-script.md` if recorded
 - Sponsor challenge: Nutrient DWS Challenge
 - Team: solo

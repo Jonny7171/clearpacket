@@ -8,6 +8,8 @@ Built for the Nutrient DWS Challenge at the DevNetwork API + Cloud + AI Hackatho
 
 The hosted demo uses the real Nutrient DWS Processor API for document extraction and audit PDF generation.
 
+![ClearPacket verification workspace](output/devpost/clearpacket-cover.jpg)
+
 ## Why it exists
 
 Accounts payable teams should not have to scan three documents line by line to catch a small overbill. ClearPacket lets document extraction handle the reading, deterministic rules handle the comparison, and a person handle only the exception.
