@@ -19,6 +19,7 @@
 # misc
 .DS_Store
 *.pem
+*.tsbuildinfo
 
 # debug
 npm-debug.log*
@@ -37,6 +38,11 @@ next-env.d.ts
 /outputs/
 /work/
 /tmp/
+
+# generated demo video
+/output/devpost/*.mp4
+/output/devpost/video-frames/
+/output/devpost/clearpacket-resolved.jpg
 
 .projects/cache
 .projects/vault

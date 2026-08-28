@@ -6,6 +6,8 @@ Built for the Nutrient DWS Challenge at the DevNetwork API + Cloud + AI Hackatho
 
 **[Open the live demo](https://clearpacket.hdjskndf.chatgpt.site)**
 
+**[Watch the 2 minute 24 second live walkthrough](https://youtu.be/Tzpq1x9O4jw)**
+
 The hosted demo uses the real Nutrient DWS Processor API for document extraction and audit PDF generation.
 
 ![ClearPacket verification workspace](output/devpost/clearpacket-cover.jpg)

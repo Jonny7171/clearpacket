@@ -12,10 +12,15 @@ const { d1, r2 } = hostingConfig;
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
 
+const localVars: Record<string, string> = {};
+if (process.env.DWS_API_KEY) {
+  localVars.DWS_API_KEY = process.env.DWS_API_KEY;
+}
+
 const localBindingConfig = {
   main: 'vinext/server/app-router-entry',
   compatibility_flags: ['nodejs_compat'],
-  vars: process.env.DWS_API_KEY ? { DWS_API_KEY: process.env.DWS_API_KEY } : {},
+  vars: localVars,
   d1_databases: d1
     ? [
         {

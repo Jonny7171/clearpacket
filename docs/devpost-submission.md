@@ -52,6 +52,6 @@ The strongest document workflow is not purely automatic. Automation should handl
 - Public source repository: https://github.com/Jonny7171/clearpacket
 - Project image: `output/devpost/clearpacket-cover.jpg`
 - Image gallery: `output/devpost/clearpacket-demo-overview.jpg` and `output/devpost/clearpacket-human-review.jpg`
-- Demo video: optional; use the 60-second script in `docs/demo-video-script.md` if recorded
+- Demo video: https://youtu.be/Tzpq1x9O4jw
 - Sponsor challenge: Nutrient DWS Challenge
 - Team: solo
