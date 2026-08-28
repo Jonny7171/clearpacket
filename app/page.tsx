@@ -107,6 +107,7 @@ export default function Home() {
   const [error, setError] = useState('');
   const [reviewOpen, setReviewOpen] = useState(false);
   const [decision, setDecision] = useState<ReviewDecision | null>(null);
+  const [exporting, setExporting] = useState(false);
   const [pendingDecision, setPendingDecision] = useState<ReviewDecision['action']>('use-received');
   const fileInputs = useRef<Record<DocumentRole, HTMLInputElement | null>>({
     purchaseOrder: null,
@@ -184,7 +185,7 @@ export default function Home() {
     setReviewOpen(false);
   }
 
-  function exportAudit() {
+  async function exportAudit() {
     const audit = {
       product: 'ClearPacket',
       packetId: result.packetId,
@@ -194,11 +195,30 @@ export default function Home() {
       verification: result,
       humanDecision: decision,
     };
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(new Blob([JSON.stringify(audit, null, 2)], { type: 'application/json' }));
-    link.download = `${result.packetId}-audit.json`;
-    link.click();
-    URL.revokeObjectURL(link.href);
+    setExporting(true);
+    setError('');
+    try {
+      const response = await fetch('/api/audit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(audit),
+      });
+      if (!response.ok) {
+        const payload = await response.json() as { error?: string };
+        throw new Error(payload.error || 'Audit export failed.');
+      }
+      const contentType = response.headers.get('content-type') || '';
+      const extension = contentType.includes('application/pdf') ? 'pdf' : 'json';
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(await response.blob());
+      link.download = `${result.packetId}-audit.${extension}`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : 'Audit export failed.');
+    } finally {
+      setExporting(false);
+    }
   }
 
   const running = runState === 'running';
@@ -331,7 +351,7 @@ export default function Home() {
             )}
             <div className="exception-actions">
               <button type="button" onClick={() => setReviewOpen(true)}>{reviewResolved ? 'Change decision' : 'Open review'}</button>
-              <button className="secondary-action" type="button" onClick={exportAudit}>Export audit</button>
+              <button className="secondary-action" type="button" onClick={exportAudit} disabled={exporting}>{exporting ? 'Building PDF...' : 'Export audit'}</button>
             </div>
           </div>
         </aside>
