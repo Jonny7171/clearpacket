@@ -37,3 +37,8 @@ next-env.d.ts
 /outputs/
 /work/
 /tmp/
+
+.projects/cache
+.projects/vault
+.projects/state.test.json
+.projects/state.local.test.json
