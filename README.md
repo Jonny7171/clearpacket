@@ -4,6 +4,10 @@ ClearPacket is a three-way document verification desk. It extracts a purchase or
 
 Built for the Nutrient DWS Challenge at the DevNetwork API + Cloud + AI Hackathon 2026.
 
+**[Open the live demo](https://clearpacket.hdjskndf.chatgpt.site)**
+
+The hosted demo uses the real Nutrient DWS Processor API for document extraction and audit PDF generation.
+
 ## Why it exists
 
 Accounts payable teams should not have to scan three documents line by line to catch a small overbill. ClearPacket lets document extraction handle the reading, deterministic rules handle the comparison, and a person handle only the exception.
@@ -26,6 +30,16 @@ Without an API key, the exact included demo packet uses a clearly labeled local 
 3. ClearPacket checks supplier identity, PO reference, line quantities, and invoice total.
 4. A reviewer chooses the payable quantity for the exception.
 5. ClearPacket exports the evidence, verification result, extraction engine, and human decision as an audit record.
+
+## Demo packet
+
+The repository includes three fictional PDFs in `public/demo/`:
+
+- `PO-1048.pdf`
+- `INV-7782.pdf`
+- `RECEIPT-592.pdf`
+
+Run the packet as supplied to reproduce the two-unit quantity variance and $18.40 invoice overage.
 
 ## Privacy
 

@@ -113,6 +113,8 @@ h2 { margin: 0; font-size: 18px; letter-spacing: -0.035em; }
 .decision-time { display: block; margin: -11px 0 17px; color: #506057; font-size: 9px; }
 footer { display: flex; justify-content: space-between; padding: 19px clamp(22px, 4vw, 68px) 28px; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; }
 footer p { margin: 0; color: var(--ink); font-weight: 800; }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { color: var(--ink); font-weight: 800; text-underline-offset: 3px; }
 
 .modal-backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 20px; background: rgba(13, 20, 16, 0.76); backdrop-filter: blur(8px); }
 .review-modal { width: min(620px, 100%); max-height: calc(100vh - 40px); overflow: auto; padding: clamp(24px, 4vw, 38px); border: 1px solid var(--ink); border-radius: 24px; background: var(--paper); box-shadow: 8px 9px 0 rgba(215,255,82,0.55); }
@@ -163,7 +165,7 @@ footer p { margin: 0; color: var(--ink); font-weight: 800; }
   .score-ring { width: 84px; height: 84px; }
   .check-row { grid-template-columns: 25px 1fr; padding: 6px 0; }
   .check-row strong { grid-column: 2; margin-top: -8px; padding-bottom: 5px; }
-  footer { display: grid; gap: 8px; }
+  footer, .footer-links { display: grid; gap: 8px; }
   .result-topline { align-items: center; }
   .result-badges { align-items: flex-end; flex-direction: column; }
   .evidence-grid { grid-template-columns: 1fr; }

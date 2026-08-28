@@ -357,7 +357,13 @@ export default function Home() {
         </aside>
       </section>
 
-      <footer><p>Built for decisions that need evidence.</p><span>Extraction powered by Nutrient DWS</span></footer>
+      <footer>
+        <p>Built for decisions that need evidence.</p>
+        <div className="footer-links">
+          <a href="https://github.com/Jonny7171/clearpacket" target="_blank" rel="noreferrer">View source</a>
+          <span>Extraction powered by Nutrient DWS</span>
+        </div>
+      </footer>
 
       {reviewOpen && (
         <div className="modal-backdrop" role="presentation" onMouseDown={() => setReviewOpen(false)}>
