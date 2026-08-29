@@ -2,16 +2,19 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'ClearPacket | Document verification with evidence',
-  description: 'Compare invoices, purchase orders, and delivery receipts before money moves.',
+  metadataBase: new URL('https://clearpacket.hdjskndf.chatgpt.site'),
+  title: 'ClearPacket | Accounts payable packet review',
+  description: 'Review the exact difference between a purchase order, supplier invoice, and delivery receipt.',
   openGraph: {
-    title: 'ClearPacket | Every mismatch before you pay',
-    description: 'Three-way document verification with a human decision where it matters.',
+    title: 'ClearPacket | Accounts payable packet review',
+    description: 'A working three-way document check built with Nutrient DWS.',
+    images: ['/og.png'],
   },
   twitter: {
-    card: 'summary',
-    title: 'ClearPacket | Every mismatch before you pay',
-    description: 'Three-way document verification with a human decision where it matters.',
+    card: 'summary_large_image',
+    title: 'ClearPacket | Accounts payable packet review',
+    description: 'A working three-way document check built with Nutrient DWS.',
+    images: ['/og.png'],
   },
 };
 

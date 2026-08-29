@@ -23,8 +23,6 @@ type Check = {
 
 type VerificationResult = {
   packetId: string;
-  confidence: number;
-  fieldCount: number;
   exceptionCount: number;
   checks: Check[];
   exception: {
@@ -52,7 +50,7 @@ const sampleDocuments: PacketDocument[] = [
     role: 'purchaseOrder',
     label: 'Purchase order',
     fileName: 'PO-1048.pdf',
-    detail: '24 fields ready',
+    detail: 'Ordered Aug 20, 2026',
     tone: 'clay',
     url: '/demo/PO-1048.pdf',
   },
@@ -60,7 +58,7 @@ const sampleDocuments: PacketDocument[] = [
     role: 'invoice',
     label: 'Supplier invoice',
     fileName: 'INV-7782.pdf',
-    detail: '31 fields ready',
+    detail: 'Dated Aug 26, 2026',
     tone: 'lime',
     url: '/demo/INV-7782.pdf',
   },
@@ -68,7 +66,7 @@ const sampleDocuments: PacketDocument[] = [
     role: 'receipt',
     label: 'Delivery receipt',
     fileName: 'RECEIPT-592.pdf',
-    detail: '18 fields ready',
+    detail: 'Received Aug 25, 2026',
     tone: 'blue',
     url: '/demo/RECEIPT-592.pdf',
   },
@@ -76,13 +74,11 @@ const sampleDocuments: PacketDocument[] = [
 
 const previewResult: VerificationResult = {
   packetId: 'CP-1048',
-  confidence: 94,
-  fieldCount: 73,
   exceptionCount: 2,
   checks: [
     { name: 'Supplier identity', value: 'Exact match', status: 'pass' },
     { name: 'PO reference', value: 'PO-1048', status: 'pass' },
-    { name: 'Line quantities', value: '2 need review', status: 'warn' },
+    { name: 'Line quantities', value: '12 billed / 10 received', status: 'warn' },
     { name: 'Invoice total', value: '$18.40 over', status: 'warn' },
   ],
   exception: {
@@ -228,32 +224,33 @@ export default function Home() {
     <main className="site-shell">
       <nav className="topbar" aria-label="Primary navigation">
         <a className="brand" href="#top" aria-label="ClearPacket home">
-          <span className="brand-mark" aria-hidden="true"><span /><span /><span /></span>
+          <span className="brand-mark" aria-hidden="true">CP</span>
           <span>ClearPacket</span>
         </a>
         <div className="nav-context">
-          <span className="context-label">Workspace</span>
-          <span className="context-name">Northwind Finance</span>
+          <span className="context-label">Northwind Fabrication</span>
+          <span className="context-separator">/</span>
+          <span className="context-name">Accounts payable review</span>
         </div>
         <div className="nav-actions">
-          <span className="secure-pill"><i /> Auditable workflow</span>
-          <button className="avatar" aria-label="Demo account">JG</button>
+          <span className="secure-pill"><i /> Nutrient DWS connected</span>
+          <span className="environment-label">Demo workspace</span>
         </div>
       </nav>
 
       <section className="hero" id="top">
-        <div className="eyebrow"><span>Three-way document verification</span><b>Live packet</b></div>
+        <div className="eyebrow"><span>Packet {result.packetId}</span><span>Queued August 27, 2026</span><b>{reviewResolved ? 'Reviewed' : 'Review required'}</b></div>
         <div className="hero-grid">
-          <div><h1>Every mismatch.<br />Before you pay.</h1></div>
+          <div><h1>INV-7782 needs a quantity decision</h1></div>
           <div className="hero-copy">
             <p>
-              ClearPacket compares the purchase order, invoice, and delivery receipt,
-              then sends only uncertain items to a person.
+              Apex Industrial Supply billed 12 protective sleeves. The purchase order
+              and delivery receipt both show 10.
             </p>
             <div className="proof-row">
-              <span><b>{result.fieldCount}</b> fields checked</span>
-              <span><b>{reviewResolved ? 0 : result.exceptionCount}</b> exceptions open</span>
-              <span><b>{reviewResolved ? 0 : 1}</b> decision left</span>
+              <span><small>Invoice difference</small><b>{currency.format(result.exception.overage)}</b></span>
+              <span><small>Documents matched</small><b>3</b></span>
+              <span><small>Review owner</small><b>J. Gagnon</b></span>
             </div>
           </div>
         </div>
@@ -262,7 +259,7 @@ export default function Home() {
       <section className="workspace" aria-label="Document verification workspace">
         <div className="packet-panel">
           <div className="panel-heading">
-            <div><span className="section-number">01</span><h2>Source documents</h2></div>
+            <div><span className="section-number">1</span><h2>Documents in this packet</h2></div>
             <button className="add-button" type="button" onClick={resetDemo}><span>↺</span> Use demo packet</button>
           </div>
 
@@ -299,26 +296,24 @@ export default function Home() {
             <span className={`button-arrow ${running ? 'working' : ''}`} aria-hidden="true">{running ? '·' : '↗'}</span>
           </button>
           {error && <p className="error-note" role="alert">{error}</p>}
-          <p className="privacy-note">Documents are processed for this packet only. Every extraction and decision is logged.</p>
+          <p className="privacy-note">Files are processed for this packet only. ClearPacket does not store the uploaded PDFs.</p>
         </div>
 
         <aside className="result-panel" aria-label="Verification result" aria-busy={running}>
           <div className="result-topline">
-            <div><span className="section-number light">02</span><h2>Verification</h2></div>
+            <div><span className="section-number light">2</span><h2>Comparison result</h2></div>
             <div className="result-badges">
               <span className="engine-badge">{result.engine === 'nutrient-dws' ? 'Nutrient DWS' : 'Demo data'}</span>
               <span className="packet-id">{result.packetId}</span>
             </div>
           </div>
 
-          <div className="score-block">
-            <div className={`score-ring ${reviewResolved ? 'resolved' : ''}`} aria-label={`${result.confidence} percent matched`}>
-              <span>{result.confidence}<small>%</small></span>
-            </div>
+          <div className={`issue-summary ${reviewResolved ? 'resolved' : ''}`}>
+            <div className="issue-mark" aria-hidden="true">{reviewResolved ? '✓' : '!'}</div>
             <div>
-              <span className="score-label">Packet confidence</span>
-              <strong>{reviewResolved ? 'Human review complete' : 'Review two exceptions'}</strong>
-              <p>{reviewResolved ? decision?.note : 'Everything else agrees across all three documents.'}</p>
+              <span className="score-label">{reviewResolved ? 'Review complete' : 'One decision required'}</span>
+              <strong>{reviewResolved ? decision?.label : `Quantity mismatch on ${result.exception.sku}`}</strong>
+              <p>{reviewResolved ? decision?.note : 'Supplier, PO reference, and unit price agree. The invoice quantity does not.'}</p>
             </div>
           </div>
 
@@ -336,8 +331,8 @@ export default function Home() {
 
           <div className={`exception-card ${reviewResolved ? 'reviewed' : ''}`}>
             <div className="exception-head">
-              <span>{reviewResolved ? 'Decision recorded' : 'Needs a person'}</span>
-              <b>{reviewResolved ? 'Resolved' : `${result.exceptionCount} items`}</b>
+              <span>{reviewResolved ? 'Decision recorded' : 'Decision required'}</span>
+              <b>{reviewResolved ? 'Closed' : result.exception.sku}</b>
             </div>
             {reviewResolved ? (
               <>
@@ -358,10 +353,10 @@ export default function Home() {
       </section>
 
       <footer>
-        <p>Built for decisions that need evidence.</p>
+        <p>Nutrient DWS extracts the documents. ClearPacket compares the values and records the review.</p>
         <div className="footer-links">
           <a href="https://github.com/Jonny7171/clearpacket" target="_blank" rel="noreferrer">View source</a>
-          <span>Extraction powered by Nutrient DWS</span>
+          <span>Fictional demonstration data</span>
         </div>
       </footer>
 

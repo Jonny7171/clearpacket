@@ -26,13 +26,11 @@ const demoFiles: Record<DocumentRole, { name: string; size: number }> = {
 
 const demoResult = {
   packetId: 'CP-1048',
-  confidence: 94,
-  fieldCount: 73,
   exceptionCount: 2,
   checks: [
     { name: 'Supplier identity', value: 'Exact match', status: 'pass' },
     { name: 'PO reference', value: 'PO-1048', status: 'pass' },
-    { name: 'Line quantities', value: '2 need review', status: 'warn' },
+    { name: 'Line quantities', value: '12 billed / 10 received', status: 'warn' },
     { name: 'Invoice total', value: '$18.40 over', status: 'warn' },
   ],
   exception: {
@@ -167,18 +165,15 @@ function buildVerification(extracted: ExtractedDocument[]) {
   const quantityMismatch = invoiceLine.quantity !== poLine.quantity || invoiceLine.quantity !== receiptLine.quantity;
   const overage = Math.max(0, Number((invoiceTotal - poTotal).toFixed(2)));
   const exceptionCount = Number(quantityMismatch) + Number(overage > 0);
-  const confidence = Math.max(0, 100 - exceptionCount * 3);
   const status = (warning: boolean) => warning ? 'warn' as const : 'pass' as const;
 
   return {
     packetId: `CP-${poReferences[0]?.split('-')[1] || 'NEW'}`,
-    confidence,
-    fieldCount: 73,
     exceptionCount,
     checks: [
       { name: 'Supplier identity', value: supplierMatch ? 'Exact match' : 'Needs review', status: status(!supplierMatch) },
       { name: 'PO reference', value: referenceMatch ? poReferences[0] : 'Needs review', status: status(!referenceMatch) },
-      { name: 'Line quantities', value: quantityMismatch ? `${invoiceLine.quantity - receiptLine.quantity} need review` : 'Exact match', status: status(quantityMismatch) },
+      { name: 'Line quantities', value: quantityMismatch ? `${invoiceLine.quantity} billed / ${receiptLine.quantity} received` : 'Exact match', status: status(quantityMismatch) },
       { name: 'Invoice total', value: overage > 0 ? `$${overage.toFixed(2)} over` : 'Exact match', status: status(overage > 0) },
     ],
     exception: {

@@ -1,6 +1,8 @@
 # ClearPacket
 
-ClearPacket is a three-way document verification desk. It extracts a purchase order, supplier invoice, and delivery receipt, compares them with deterministic rules, sends uncertain items to a person, and exports the full audit trail.
+I built ClearPacket to answer one narrow accounts payable question: does the invoice agree with what was ordered and received?
+
+The app reads a purchase order, supplier invoice, and delivery receipt with Nutrient DWS. It compares the extracted values in code, shows the exact difference, and records the reviewer’s decision in an audit PDF.
 
 Built for the Nutrient DWS and Foxit Software challenges at the DevNetwork API + Cloud + AI Hackathon 2026.
 
@@ -12,11 +14,11 @@ The hosted demo uses the real Nutrient DWS Processor API for document extraction
 
 ![ClearPacket verification workspace](output/devpost/clearpacket-cover.jpg)
 
-## Why it exists
+## The demo
 
-Accounts payable teams should not have to scan three documents line by line to catch a small overbill. ClearPacket lets document extraction handle the reading, deterministic rules handle the comparison, and a person handle only the exception.
+The fictional packet contains a small error that is easy to miss when the files are reviewed separately. The invoice lists 12 protective sleeves. The purchase order and receipt both list 10. At $9.20 each, the difference is $18.40.
 
-The included fictional packet contains one deliberate mismatch: the supplier invoice bills 12 protective sleeves while the purchase order and delivery receipt both show 10. ClearPacket identifies the quantity variance and the resulting $18.40 overage.
+The hosted walkthrough uses the real Nutrient DWS Processor API for extraction and for the final audit PDF. If the API key is unavailable, only the supplied fictional packet can use the clearly labelled fallback result. Uploaded files never fall back to demo data.
 
 ## Run locally
 
@@ -27,11 +29,11 @@ The included fictional packet contains one deliberate mismatch: the supplier inv
 
 Without an API key, the exact included demo packet uses a clearly labeled local demo result. Any uploaded documents require Nutrient DWS.
 
-## Verification flow
+## What happens when you run it
 
 1. Upload or open the three source PDFs.
 2. Nutrient DWS extracts plain text, structured text, key-value pairs, and tables.
-3. ClearPacket checks supplier identity, PO reference, line quantities, and invoice total.
+3. ClearPacket checks the supplier, PO reference, line quantities, unit price, and invoice total.
 4. A reviewer chooses the payable quantity for the exception.
 5. ClearPacket exports the evidence, verification result, extraction engine, and human decision as an audit record.
 
@@ -76,6 +78,8 @@ The repository includes three fictional PDFs in `public/demo/`:
 
 Run the packet as supplied to reproduce the two-unit quantity variance and $18.40 invoice overage.
 
-## Privacy
+## Scope and privacy
 
 Uploaded PDFs are processed in memory for the current verification request. ClearPacket does not persist source documents or API keys.
+
+This is a focused hackathon build, not a finished accounts payable platform. The current parser is tuned to the included packet structure. Production work would add supplier-specific field mappings, duplicate invoice checks, tolerance policies, and ERP export.
