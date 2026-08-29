@@ -8,7 +8,7 @@ Built for the Nutrient DWS and Foxit Software challenges at the DevNetwork API +
 
 **[Open the live demo](https://clearpacket.hdjskndf.chatgpt.site)**
 
-**[Watch the 2 minute 24 second live walkthrough](https://youtu.be/Tzpq1x9O4jw)**
+**[Watch the 50-second walkthrough](https://youtu.be/Rddunuh6of4)**
 
 The hosted demo uses the real Nutrient DWS Processor API for document extraction and audit PDF generation.
 

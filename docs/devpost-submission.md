@@ -52,6 +52,6 @@ The useful split is straightforward: let the document service read the files, le
 - Public source repository: https://github.com/Jonny7171/clearpacket
 - Project image: `output/devpost/clearpacket-cover.jpg`
 - Image gallery: `output/devpost/clearpacket-demo-overview.jpg` and `output/devpost/clearpacket-human-review.jpg`
-- Demo video: https://youtu.be/Tzpq1x9O4jw
+- Demo video: https://youtu.be/Rddunuh6of4
 - Sponsor challenge: Nutrient DWS Challenge
 - Team: solo
