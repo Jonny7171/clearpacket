@@ -9,7 +9,7 @@ let outputURL = root.appendingPathComponent("output/devpost/clearpacket-demo.mp4
 let frameRate: Int32 = 30
 let width = 1920
 let height = 1080
-let durations = [8, 20, 14, 24, 26, 26, 18, 8]
+let durations = [6, 12, 12, 12, 8]
 
 try? FileManager.default.removeItem(at: outputURL)
 
@@ -88,7 +88,7 @@ func makePixelBuffer(image: CGImage, progress: Double, animate: Bool) -> CVPixel
 }
 
 var frameIndex: Int64 = 0
-for sceneIndex in 1...8 {
+for sceneIndex in 1...5 {
     let sceneURL = frameDirectory.appendingPathComponent("scene-\(sceneIndex).png")
     let image = loadCGImage(sceneURL)
     let sceneFrames = durations[sceneIndex - 1] * Int(frameRate)
@@ -98,7 +98,7 @@ for sceneIndex in 1...8 {
             Thread.sleep(forTimeInterval: 0.002)
         }
         let progress = sceneFrames > 1 ? Double(sceneFrame) / Double(sceneFrames - 1) : 0.0
-        let buffer = makePixelBuffer(image: image, progress: progress, animate: sceneIndex > 1 && sceneIndex < 8)
+        let buffer = makePixelBuffer(image: image, progress: progress, animate: sceneIndex > 1 && sceneIndex < 5)
         let time = CMTime(value: frameIndex, timescale: frameRate)
         if !adaptor.append(buffer, withPresentationTime: time) {
             fatalError("Unable to append frame \(frameIndex): \(writer.error?.localizedDescription ?? "unknown error")")

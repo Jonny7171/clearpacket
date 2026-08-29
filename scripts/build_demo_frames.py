@@ -8,130 +8,91 @@ ASSET_DIR = ROOT / "output" / "devpost"
 FRAME_DIR = ASSET_DIR / "video-frames"
 SIZE = (1920, 1080)
 
-INK = "#13211A"
-CREAM = "#F5F2EA"
-LIME = "#D9FF62"
-PEACH = "#F2B28A"
-BLUE = "#BFD3F5"
-MUTED = "#657068"
+INK = "#14223D"
+PAPER = "#F7F8FA"
+AMBER = "#C98A21"
+GREEN = "#326A53"
+RULE = "#CCD2DC"
+MUTED = "#5E6675"
 
 FONT_REGULAR = "/System/Library/Fonts/Supplemental/Arial.ttf"
 FONT_BOLD = "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
+FONT_MONO = "/System/Library/Fonts/Supplemental/Courier New.ttf"
 
 
-def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
-    return ImageFont.truetype(FONT_BOLD if bold else FONT_REGULAR, size)
+def font(size: int, bold: bool = False, mono: bool = False) -> ImageFont.FreeTypeFont:
+    path = FONT_MONO if mono else (FONT_BOLD if bold else FONT_REGULAR)
+    return ImageFont.truetype(path, size)
 
 
-def centered(draw: ImageDraw.ImageDraw, text: str, y: int, style: ImageFont.FreeTypeFont, fill: str) -> None:
-    box = draw.textbbox((0, 0), text, font=style)
-    x = (SIZE[0] - (box[2] - box[0])) // 2
-    draw.text((x, y), text, font=style, fill=fill)
-
-
-def pill(draw: ImageDraw.ImageDraw, text: str, x: int, y: int, color: str) -> None:
-    style = font(25, bold=True)
-    box = draw.textbbox((0, 0), text, font=style)
-    width = box[2] - box[0] + 42
-    draw.rounded_rectangle((x - width, y, x, y + 48), radius=24, fill=color)
-    draw.text((x - width + 21, y + 9), text, font=style, fill=INK)
+def header(draw: ImageDraw.ImageDraw, step: str, note: str) -> None:
+    draw.text((76, 48), "ClearPacket", font=font(38, bold=True), fill=INK)
+    draw.text((76, 98), note, font=font(24), fill=MUTED)
+    draw.text((1804, 58), step, anchor="ra", font=font(23, mono=True), fill=MUTED)
+    draw.line((76, 140, 1844, 140), fill=RULE, width=2)
 
 
 def intro() -> Image.Image:
-    image = Image.new("RGB", SIZE, CREAM)
+    image = Image.new("RGB", SIZE, PAPER)
     draw = ImageDraw.Draw(image)
-    draw.rounded_rectangle((110, 100, 1810, 980), radius=44, fill=INK)
-    draw.rounded_rectangle((155, 145, 270, 260), radius=24, fill=LIME)
-    draw.text((188, 155), "C", font=font(78, bold=True), fill=INK)
-    centered(draw, "ClearPacket", 320, font(128, bold=True), CREAM)
-    centered(draw, "Catch invoice mismatches before money moves.", 485, font(48), CREAM)
-    draw.rounded_rectangle((600, 625, 1320, 705), radius=40, fill=LIME)
-    centered(draw, "LIVE NUTRIENT DWS VERIFICATION", 646, font(31, bold=True), INK)
-    centered(draw, "Purchase order  +  invoice  +  delivery receipt", 790, font(31), "#CAD3CD")
+    draw.text((112, 90), "ClearPacket", font=font(42, bold=True), fill=INK)
+    draw.text((112, 158), "DEMO NOTE / PACKET CP-1048", font=font(24, mono=True), fill=MUTED)
+    draw.line((112, 215, 1808, 215), fill=INK, width=3)
+    draw.text((112, 270), "INV-7782 needs a quantity decision", font=font(68, bold=True), fill=INK)
+
+    rows = [
+        ("SOURCE DOCUMENTS", "PO-1048, INV-7782, RECEIPT-592"),
+        ("EVIDENCE", "10 ordered / 12 billed / 10 received"),
+        ("VALUE AT ISSUE", "$18.40"),
+        ("REVIEW CHOICE", "Pay for 10 received units"),
+    ]
+    top = 430
+    for index, (label, value) in enumerate(rows):
+        y = top + index * 120
+        draw.line((112, y, 1808, y), fill=RULE, width=2)
+        draw.text((112, y + 32), label, font=font(22, mono=True), fill=MUTED)
+        draw.text((580, y + 24), value, font=font(35, bold=True), fill=INK if index != 2 else AMBER)
+    draw.line((112, top + len(rows) * 120, 1808, top + len(rows) * 120), fill=RULE, width=2)
     return image
 
 
-def workflow_scene(
-    asset_name: str,
-    step: str,
-    title: str,
-    caption: str,
-    color: str,
-    crop_box: tuple[float, float, float, float] | None = None,
-) -> Image.Image:
-    image = Image.new("RGB", SIZE, CREAM)
+def screenshot_scene(asset_name: str, step: str, note: str, caption: str) -> Image.Image:
+    image = Image.new("RGB", SIZE, PAPER)
     draw = ImageDraw.Draw(image)
-    draw.text((70, 30), "ClearPacket", font=font(38, bold=True), fill=INK)
-    draw.text((70, 78), title, font=font(25), fill=MUTED)
-    pill(draw, step, 1850, 35, color)
+    header(draw, step, note)
 
     source = Image.open(ASSET_DIR / asset_name).convert("RGB")
-    if crop_box:
-        source = source.crop(
-            (
-                int(source.width * crop_box[0]),
-                int(source.height * crop_box[1]),
-                int(source.width * crop_box[2]),
-                int(source.height * crop_box[3]),
-            )
-        )
-    fitted = ImageOps.contain(source, (1680, 850), Image.Resampling.LANCZOS)
+    fitted = ImageOps.contain(source, (1760, 820), Image.Resampling.LANCZOS)
     x = (SIZE[0] - fitted.width) // 2
-    y = 135 + (850 - fitted.height) // 2
-    draw.rounded_rectangle((x - 8, y - 8, x + fitted.width + 8, y + fitted.height + 8), radius=20, fill="#D4D0C5")
+    y = 165 + (820 - fitted.height) // 2
+    draw.rectangle((x - 2, y - 2, x + fitted.width + 2, y + fitted.height + 2), outline=RULE, width=2)
     image.paste(fitted, (x, y))
-
-    centered(draw, caption, 1018, font(30, bold=True), INK)
+    draw.text((76, 1016), caption, font=font(27, bold=True), fill=INK)
     return image
 
 
-def architecture_scene() -> Image.Image:
-    image = Image.new("RGB", SIZE, CREAM)
+def implementation_scene() -> Image.Image:
+    image = Image.new("RGB", SIZE, PAPER)
     draw = ImageDraw.Draw(image)
-    draw.text((70, 30), "ClearPacket", font=font(38, bold=True), fill=INK)
-    draw.text((70, 78), "One replayable document pipeline", font=font(25), fill=MUTED)
-    pill(draw, "06  AUDITABLE PIPELINE", 1850, 35, BLUE)
-
-    labels = [
-        ("SOURCE PDFs", "PO + invoice + receipt", PEACH),
-        ("NUTRIENT DWS", "Extract structured evidence", LIME),
-        ("CLEARPACKET", "Run deterministic checks", BLUE),
-        ("HUMAN REVIEW", "Resolve only the exception", PEACH),
-        ("NUTRIENT DWS", "Export the audit PDF", LIME),
+    header(draw, "05 / 05", "What is running behind the screen")
+    rows = [
+        ("EXTRACT", "Nutrient DWS Processor API reads all three PDFs"),
+        ("COMPARE", "TypeScript checks supplier, PO reference, quantity, and total"),
+        ("REVIEW", "A person chooses the payable quantity"),
+        ("EXPORT", "Nutrient DWS creates the final audit PDF"),
     ]
-    box_width = 295
-    gap = 42
-    start_x = (SIZE[0] - (len(labels) * box_width + (len(labels) - 1) * gap)) // 2
-    y = 365
-
-    for index, (label, detail, color) in enumerate(labels):
-        x = start_x + index * (box_width + gap)
-        draw.rounded_rectangle((x, y, x + box_width, y + 245), radius=28, fill=color, outline=INK, width=2)
-        draw.text((x + 24, y + 35), f"0{index + 1}", font=font(24, bold=True), fill=INK)
-        draw.text((x + 24, y + 92), label, font=font(25, bold=True), fill=INK)
-        draw.multiline_text((x + 24, y + 142), detail, font=font(21), fill=INK, spacing=7)
-        if index < len(labels) - 1:
-            arrow_x = x + box_width + 10
-            draw.line((arrow_x, y + 122, arrow_x + 22, y + 122), fill=INK, width=4)
-            draw.polygon(
-                [(arrow_x + 22, y + 113), (arrow_x + 36, y + 122), (arrow_x + 22, y + 131)],
-                fill=INK,
-            )
-
-    centered(draw, "DWS reads the evidence and builds the final PDF. Code owns every financial fact.", 810, font(34, bold=True), INK)
-    centered(draw, "A person stays in control of the payment decision.", 872, font(29), MUTED)
-    return image
-
-
-def outro() -> Image.Image:
-    image = Image.new("RGB", SIZE, INK)
-    draw = ImageDraw.Draw(image)
-    centered(draw, "Every mismatch. Before you pay.", 245, font(82, bold=True), CREAM)
-    centered(draw, "The evidence, the decision, and the audit trail stay together.", 390, font(38), "#D8DFDA")
-    draw.rounded_rectangle((490, 545, 1430, 650), radius=52, fill=LIME)
-    centered(draw, "clearpacket.hdjskndf.chatgpt.site", 574, font(35, bold=True), INK)
-    centered(draw, "Built with Nutrient DWS", 745, font(34, bold=True), PEACH)
-    centered(draw, "Source: github.com/Jonny7171/clearpacket", 805, font(28), "#B8C2BC")
+    top = 250
+    for index, (label, value) in enumerate(rows):
+        y = top + index * 142
+        draw.line((92, y, 1828, y), fill=RULE, width=2)
+        draw.text((112, y + 40), f"0{index + 1}", font=font(23, mono=True), fill=GREEN)
+        draw.text((220, y + 40), label, font=font(27, bold=True), fill=INK)
+        draw.text((570, y + 37), value, font=font(29), fill=INK)
+    draw.line((92, top + len(rows) * 142, 1828, top + len(rows) * 142), fill=RULE, width=2)
+    draw.text((112, 900), "LIVE", font=font(20, mono=True), fill=MUTED)
+    draw.text((300, 894), "clearpacket.hdjskndf.chatgpt.site", font=font(29, bold=True), fill=INK)
+    draw.text((112, 970), "SOURCE", font=font(20, mono=True), fill=MUTED)
+    draw.text((300, 964), "github.com/Jonny7171/clearpacket", font=font(29, bold=True), fill=INK)
     return image
 
 
@@ -139,47 +100,25 @@ def main() -> None:
     FRAME_DIR.mkdir(parents=True, exist_ok=True)
     scenes = [
         intro(),
-        workflow_scene(
+        screenshot_scene(
             "live-start.jpg",
-            "01  SOURCE PACKET",
-            "Three source PDFs become one verification packet",
-            "Purchase order, supplier invoice, and delivery receipt. 73 fields and one decision.",
-            LIME,
+            "02 / 05",
+            "The three documents are shown beside the comparison result",
+            "The source files and the exact mismatch stay on the same screen.",
         ),
-        workflow_scene(
-            "live-processing.jpg",
-            "02  LIVE DWS RUN",
-            "Nutrient DWS extracts the packet",
-            "Plain text, structured text, key-value pairs, and tables are extracted server-side.",
-            LIME,
-            (0.02, 0.31, 0.98, 0.95),
-        ),
-        workflow_scene(
-            "live-verified.jpg",
-            "03  VERIFIED EXCEPTION",
-            "Deterministic checks find the mismatch",
-            "The live Nutrient DWS result exposes a two-unit, $18.40 invoice overbill.",
-            BLUE,
-            (0.02, 0.31, 0.98, 0.95),
-        ),
-        workflow_scene(
+        screenshot_scene(
             "live-review.jpg",
-            "04  HUMAN REVIEW",
-            "Only judgment reaches a person",
-            "10 ordered. 12 invoiced. 10 received. The reviewer chooses the payable quantity.",
-            PEACH,
-            (0.02, 0.12, 0.98, 0.92),
+            "03 / 05",
+            "The reviewer sees the three quantities before choosing",
+            "10 ordered. 12 billed. 10 received. No payment action is automatic.",
         ),
-        workflow_scene(
+        screenshot_scene(
             "live-resolved.jpg",
-            "05  DECISION RECORDED",
-            "The human decision closes the packet",
-            "Open decisions drop from 1 to 0 and the $18.40 adjustment stays with the evidence.",
-            BLUE,
-            (0.02, 0.31, 0.98, 0.95),
+            "04 / 05",
+            "The selected quantity is recorded with the packet",
+            "The $18.40 adjustment remains attached to the evidence and audit export.",
         ),
-        architecture_scene(),
-        outro(),
+        implementation_scene(),
     ]
     for index, scene in enumerate(scenes, start=1):
         scene.save(FRAME_DIR / f"scene-{index}.png", optimize=True)
