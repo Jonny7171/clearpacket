@@ -141,7 +141,7 @@ export async function POST(request: Request) {
     }
 
     const apiKey = dwsApiKey();
-    if (!apiKey) {
+    if (!apiKey || audit.extractionEngine === 'local-demo') {
       return new Response(JSON.stringify(audit, null, 2), {
         headers: {
           'Content-Type': 'application/json',

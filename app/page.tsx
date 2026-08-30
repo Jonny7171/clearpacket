@@ -36,6 +36,7 @@ type VerificationResult = {
   };
   engine: 'nutrient-dws' | 'local-demo';
   completedAt: string;
+  notice?: string;
 };
 
 type ReviewDecision = {
@@ -296,6 +297,7 @@ export default function Home() {
             <span className={`button-arrow ${running ? 'working' : ''}`} aria-hidden="true">{running ? '·' : '↗'}</span>
           </button>
           {error && <p className="error-note" role="alert">{error}</p>}
+          {result.notice && runState === 'complete' && <p className="fallback-note" role="status">{result.notice}</p>}
           <p className="privacy-note">Files are processed for this packet only. ClearPacket does not store the uploaded PDFs.</p>
         </div>
 
@@ -303,7 +305,7 @@ export default function Home() {
           <div className="result-topline">
             <div><span className="section-number light">2</span><h2>Comparison result</h2></div>
             <div className="result-badges">
-              <span className="engine-badge">{result.engine === 'nutrient-dws' ? 'Nutrient DWS' : 'Demo data'}</span>
+              <span className="engine-badge">{result.engine === 'nutrient-dws' ? 'Nutrient DWS' : result.notice ? 'Demo fallback' : 'Demo data'}</span>
               <span className="packet-id">{result.packetId}</span>
             </div>
           </div>

@@ -18,6 +18,13 @@ type LineItem = {
   amount: number;
 };
 
+class DwsRequestError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message);
+    this.name = 'DwsRequestError';
+  }
+}
+
 const demoFiles: Record<DocumentRole, { name: string; size: number }> = {
   purchaseOrder: { name: 'PO-1048.pdf', size: 3050 },
   invoice: { name: 'INV-7782.pdf', size: 3028 },
@@ -114,7 +121,7 @@ async function extractWithDws(role: DocumentRole, file: File, apiKey: string): P
   });
   if (!response.ok) {
     const detail = (await response.text()).slice(0, 500);
-    throw new Error(`Nutrient could not extract ${file.name}: ${response.status} ${detail}`);
+    throw new DwsRequestError(`Nutrient could not extract ${file.name}: ${response.status} ${detail}`, response.status);
   }
 
   const raw = await response.json() as unknown;
@@ -210,8 +217,19 @@ export async function POST(request: Request) {
       return jsonError('Live extraction is not configured yet. Use the demo packet or add DWS_API_KEY.', 503);
     }
 
-    const extracted = await Promise.all(roles.map((role) => extractWithDws(role, files[role], apiKey)));
-    return Response.json(buildVerification(extracted));
+    try {
+      const extracted = await Promise.all(roles.map((role) => extractWithDws(role, files[role], apiKey)));
+      return Response.json(buildVerification(extracted));
+    } catch (caught) {
+      if (isDemoPacket(files) && caught instanceof DwsRequestError && [402, 429, 503].includes(caught.status)) {
+        return Response.json({
+          ...demoResult,
+          completedAt: new Date().toISOString(),
+          notice: 'Nutrient DWS is temporarily unavailable. This supplied packet is showing the clearly labelled local fallback. Uploaded files never use fallback data.',
+        });
+      }
+      throw caught;
+    }
   } catch (caught) {
     const message = caught instanceof Error ? caught.message : 'Verification failed.';
     return jsonError(message, 502);

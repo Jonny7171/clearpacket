@@ -18,7 +18,7 @@ The hosted demo uses the real Nutrient DWS Processor API for document extraction
 
 The fictional packet contains a small error that is easy to miss when the files are reviewed separately. The invoice lists 12 protective sleeves. The purchase order and receipt both list 10. At $9.20 each, the difference is $18.40.
 
-The hosted walkthrough uses the real Nutrient DWS Processor API for extraction and for the final audit PDF. If the API key is unavailable, only the supplied fictional packet can use the clearly labelled fallback result. Uploaded files never fall back to demo data.
+The hosted demo calls the real Nutrient DWS Processor API for extraction and for the final audit PDF. If the API key or service credits are unavailable, only the supplied fictional packet can use the clearly labelled fallback result. Uploaded files never fall back to demo data.
 
 ## Run locally
 

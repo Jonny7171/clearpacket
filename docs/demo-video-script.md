@@ -1,45 +1,52 @@
-# ClearPacket 60-second demo script
+# ClearPacket 2 minute 30 second demo script
 
-## 0:00 to 0:08
+## 0:00 to 0:18
 
-Show the full workspace and the three PDFs.
+Show the full workspace and the three source PDFs.
 
-Voiceover: "A purchase order, an invoice, and a delivery receipt should tell the same story. ClearPacket checks that before anyone pays."
+Voiceover: "Accounts payable usually gets a purchase order, an invoice, and a delivery receipt. The numbers should agree, but checking every line by hand is slow. ClearPacket puts the three documents in one review before any money moves."
 
-## 0:08 to 0:19
+## 0:18 to 0:42
 
-Open each source document briefly, then return to the workspace.
+Open the purchase order, invoice, and receipt in turn. Point to PO-1048, item PS-092, and the quantities.
 
-Voiceover: "This fictional packet has 73 fields across three documents. Nutrient DWS extracts the content, including structured text, key-value pairs, and tables."
+Voiceover: "This is a fictional packet from Apex Industrial Supply. The order requests 10 protective sleeves. The invoice bills 12. The receipt confirms that 10 arrived. Each source stays available so the reviewer can check the evidence directly."
 
-## 0:19 to 0:31
+## 0:42 to 1:04
 
-Select Run verification. Let the extraction state appear, then show the result.
+Return to ClearPacket and select Run verification. Leave the processing state visible, then show the Nutrient DWS engine badge.
 
-Voiceover: "ClearPacket applies deterministic matching rules. Supplier and PO reference agree, but the invoice quantity and total do not."
+Voiceover: "When I run verification, the PDFs go to the Nutrient DWS Processor API. DWS extracts plain text, structured text, key-value pairs, and tables. ClearPacket then applies deterministic matching rules to those extracted values."
 
-## 0:31 to 0:43
+## 1:04 to 1:28
 
-Open the review panel and point to the quantities 10, 12, and 10.
+Point to each comparison row and the $18.40 difference.
 
-Voiceover: "The invoice bills 12 protective sleeves. The order and delivery receipt both show 10. At $9.20 each, that is an $18.40 overbill."
+Voiceover: "Supplier identity, purchase order reference, and unit price agree. Quantity does not. The invoice has two extra units at $9.20 each, so the amount at issue is $18.40. ClearPacket does not guess what to pay. It sends that decision to a person."
 
-## 0:43 to 0:53
+## 1:28 to 1:52
 
-Choose Pay for 10 received units and record the decision.
+Open the review panel. Pause on 10 ordered, 12 billed, and 10 received. Choose Pay for 10 received units.
 
-Voiceover: "A reviewer makes the only decision that needs judgment. ClearPacket records the choice and resolves the packet."
+Voiceover: "The reviewer sees the three quantities together and chooses the payable amount. Here I am paying for the 10 units that were actually received. The alternative remains available if there is a valid reason to accept the invoice variance."
 
-## 0:53 to 1:00
+## 1:52 to 2:12
 
-Select Export audit and end on the resolved state.
+Record the decision and show the resolved packet.
 
-Voiceover: "The evidence, checks, engine, and human decision leave together as an audit trail. ClearPacket catches every mismatch before money moves."
+Voiceover: "The decision closes the exception without hiding it. ClearPacket keeps the source filenames, extracted values, checks, selected action, and timestamp attached to packet CP-1048."
+
+## 2:12 to 2:30
+
+Select Export audit. Open the generated PDF and end on its evidence and decision sections.
+
+Voiceover: "Nutrient DWS converts that record into the final audit PDF. The result is a review another person can follow later: what the documents said, what failed, and who decided what to pay."
 
 ## Recording notes
 
-- Record at 1440 by 900 or 1920 by 1080.
-- Keep the browser zoom at 100 percent.
-- Do one clean take with natural pauses.
-- Show the Nutrient DWS engine badge after the live key is connected.
-- Do not record the local demo badge for the final submission.
+- Record one continuous 1920 by 1080 take.
+- Keep browser zoom at 100 percent.
+- Do not speed up the DWS processing state.
+- Show the Nutrient DWS engine badge after the live API run.
+- Open the generated audit PDF before ending.
+- Do not record the local demo fallback for the final submission.
