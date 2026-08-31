@@ -105,6 +105,7 @@ export default function Home() {
   const [reviewOpen, setReviewOpen] = useState(false);
   const [decision, setDecision] = useState<ReviewDecision | null>(null);
   const [exporting, setExporting] = useState(false);
+  const [generatingAcknowledgement, setGeneratingAcknowledgement] = useState(false);
   const [pendingDecision, setPendingDecision] = useState<ReviewDecision['action']>('use-received');
   const fileInputs = useRef<Record<DocumentRole, HTMLInputElement | null>>({
     purchaseOrder: null,
@@ -218,6 +219,41 @@ export default function Home() {
     }
   }
 
+  async function generateAcknowledgement() {
+    if (!decision) {
+      setReviewOpen(true);
+      return;
+    }
+
+    setGeneratingAcknowledgement(true);
+    setError('');
+    try {
+      const response = await fetch('/api/doctavian', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          packetId: result.packetId,
+          verification: result,
+          humanDecision: decision,
+        }),
+      });
+      if (!response.ok) {
+        const payload = await response.json() as { error?: string };
+        throw new Error(payload.error || 'Acknowledgement generation failed.');
+      }
+
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(await response.blob());
+      link.download = `${result.packetId}-supplier-credit-acknowledgement.pdf`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : 'Acknowledgement generation failed.');
+    } finally {
+      setGeneratingAcknowledgement(false);
+    }
+  }
+
   const running = runState === 'running';
   const reviewResolved = Boolean(decision);
 
@@ -234,7 +270,7 @@ export default function Home() {
           <span className="context-name">Accounts payable review</span>
         </div>
         <div className="nav-actions">
-          <span className="secure-pill"><i /> Nutrient DWS connected</span>
+          <span className="secure-pill"><i /> Nutrient + Doctavian</span>
           <span className="environment-label">Demo workspace</span>
         </div>
       </nav>
@@ -349,13 +385,19 @@ export default function Home() {
             <div className="exception-actions">
               <button type="button" onClick={() => setReviewOpen(true)}>{reviewResolved ? 'Change decision' : 'Open review'}</button>
               <button className="secondary-action" type="button" onClick={exportAudit} disabled={exporting}>{exporting ? 'Building PDF...' : 'Export audit'}</button>
+              {reviewResolved && (
+                <button className="doctavian-action" type="button" onClick={generateAcknowledgement} disabled={generatingAcknowledgement}>
+                  {generatingAcknowledgement ? 'Generating...' : 'Generate acknowledgement'}
+                </button>
+              )}
             </div>
+            {reviewResolved && <small className="generator-note">Doctavian turns the recorded decision into a supplier-ready PDF.</small>}
           </div>
         </aside>
       </section>
 
       <footer>
-        <p>Nutrient DWS extracts the documents. ClearPacket compares the values and records the review.</p>
+        <p>Nutrient extracts the files. ClearPacket verifies the values. Doctavian generates the final acknowledgement.</p>
         <div className="footer-links">
           <a href="https://github.com/Jonny7171/clearpacket" target="_blank" rel="noreferrer">View source</a>
           <span>Fictional demonstration data</span>

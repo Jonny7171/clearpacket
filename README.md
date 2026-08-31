@@ -2,9 +2,9 @@
 
 I built ClearPacket to answer one narrow accounts payable question: does the invoice agree with what was ordered and received?
 
-The app reads a purchase order, supplier invoice, and delivery receipt with Nutrient DWS. It compares the extracted values in code, shows the exact difference, and records the reviewer’s decision in an audit PDF.
+The app reads a purchase order, supplier invoice, and delivery receipt with Nutrient DWS. It compares the extracted values in code, shows the exact difference, and records the reviewer’s decision. Doctavian then turns that decision into a supplier credit acknowledgement.
 
-Built for the Nutrient DWS and Foxit Software challenges at the DevNetwork API + Cloud + AI Hackathon 2026.
+Built for the Nutrient DWS, Doctavian, and Foxit Software challenges at the DevNetwork API + Cloud + AI Hackathon 2026.
 
 **[Open the live demo](https://clearpacket.hdjskndf.chatgpt.site)**
 
@@ -23,7 +23,7 @@ The hosted demo calls the real Nutrient DWS Processor API for extraction and for
 ## Run locally
 
 1. Install dependencies with `pnpm install`.
-2. Copy `.env.example` to `.env.local` and add a Nutrient DWS API key.
+2. Copy `.env.example` to `.env.local` and add the server-side API credentials you want to test.
 3. Start the app with `pnpm dev`.
 4. Open `http://localhost:3000`.
 
@@ -35,7 +35,19 @@ Without an API key, the exact included demo packet uses a clearly labeled local 
 2. Nutrient DWS extracts plain text, structured text, key-value pairs, and tables.
 3. ClearPacket checks the supplier, PO reference, line quantities, unit price, and invoice total.
 4. A reviewer chooses the payable quantity for the exception.
-5. ClearPacket exports the evidence, verification result, extraction engine, and human decision as an audit record.
+5. ClearPacket exports the evidence and human decision as an audit record.
+6. Doctavian merges the verified values into a supplier-ready acknowledgement PDF.
+
+## Doctavian acknowledgement
+
+The Doctavian route does real document work after the human decision:
+
+1. ClearPacket derives the payable quantity and credit from the verified invoice and receipt values.
+2. It uploads a DOCX template and the structured packet data to Doctavian.
+3. It calls Doctavian's document generation API to merge repeaters, calculations, and the conditional credit paragraph.
+4. It downloads the generated PDF to the reviewer.
+
+The app never accepts a typed credit amount. The $18.40 adjustment is recalculated on the server from 12 invoiced units, 10 received units, and the $9.20 unit price. The included template and sample data are in `assets/doctavian/`.
 
 ## Foxit resolution agent
 
@@ -80,6 +92,6 @@ Run the packet as supplied to reproduce the two-unit quantity variance and $18.4
 
 ## Scope and privacy
 
-Uploaded PDFs are processed in memory for the current verification request. ClearPacket does not persist source documents or API keys.
+Uploaded PDFs are processed in memory for the current verification request. ClearPacket does not persist source documents or API keys. Doctavian receives only the structured decision data needed to generate the acknowledgement.
 
 This is a focused hackathon build, not a finished accounts payable platform. The current parser is tuned to the included packet structure. Production work would add supplier-specific field mappings, duplicate invoice checks, tolerance policies, and ERP export.
