@@ -1,0 +1,30 @@
+{
+  "data": {
+    "Packet": [
+      {
+        "PacketId": "CP-1048",
+        "SupplierName": "Apex Industrial Supply",
+        "PurchaseOrderNumber": "PO-1048",
+        "InvoiceNumber": "INV-7782",
+        "InvoiceQuantity": 12,
+        "OrderedQuantity": 10,
+        "ReceivedQuantity": 10,
+        "PayableQuantity": 10,
+        "UnitPrice": 9.2,
+        "AdjustmentAmount": 18.4,
+        "DecisionDate": "Aug 31, 2026",
+        "ReviewerName": "J. Gagnon",
+        "Adjustments": [
+          {
+            "ItemSku": "PS-092",
+            "Description": "Heat-resistant protective sleeves",
+            "InvoiceQuantity": 12,
+            "ReceivedQuantity": 10,
+            "AdjustmentAmount": 18.4
+          }
+        ]
+      }
+    ]
+  }
+}
+

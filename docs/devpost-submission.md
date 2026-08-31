@@ -8,7 +8,7 @@ Compare the purchase order, invoice, and receipt before approving payment.
 
 ClearPacket puts a purchase order, supplier invoice, and delivery receipt into one review. Nutrient DWS extracts each file. The app compares the supplier, PO reference, quantities, unit prices, and totals.
 
-If the values agree, there is nothing to review. If they do not, the app shows the conflicting numbers and asks the reviewer what should be paid. The decision is included in the exported audit record.
+If the values agree, there is nothing to review. If they do not, the app shows the conflicting numbers and asks the reviewer what should be paid. The decision is included in the audit record, then Doctavian generates the supplier credit acknowledgement.
 
 The demo packet contains a subtle but costly error. The invoice bills 12 protective sleeves while the PO and delivery receipt show 10. ClearPacket catches the two-unit variance and its $18.40 impact without asking a reviewer to compare three PDFs by hand.
 
@@ -18,7 +18,9 @@ The app uses Nutrient Document Web Services through the Processor API. Each PDF 
 
 The server normalizes the extracted evidence and compares it with TypeScript rules. Extraction and comparison are separate on purpose. The document service reads the files, but code decides whether two quantities match and calculates the dollar difference. The interface records the reviewer’s choice with the source filenames, extracted values, checks, engine, and timestamp. Nutrient DWS then converts that record to PDF.
 
-The product is built with React, TypeScript, and a server-side API route. Source PDFs and the Nutrient API key never enter client-side storage.
+After the reviewer records a decision, the server derives the payable quantity and credit from the verified values. It uploads a DOCX template and structured packet data to Doctavian, calls the document generation API, and downloads the finished PDF. The template uses a repeater for line adjustments, a sum expression for the total credit, and a conditional paragraph that appears only when a credit is due.
+
+The product is built with React, TypeScript, and server-side API routes. Source PDFs and API credentials never enter client-side storage.
 
 ## Problems I ran into
 
@@ -32,11 +34,13 @@ I also wanted the public page to remain usable without pretending a local fallba
 - The $18.40 overage is independently calculated from the quantity variance and unit price.
 - Every human decision can be exported with the source filenames and verification evidence.
 - Nutrient DWS handles both source-document extraction and the final audit PDF.
+- Doctavian turns the recorded decision into a supplier-ready credit acknowledgement PDF.
+- The Doctavian template includes a repeater, calculated credit total, and conditional credit language.
 - The app is usable on desktop and mobile and includes a complete fictional document packet.
 
 ## What I learned
 
-The useful split is straightforward: let the document service read the files, let code handle the arithmetic, and leave the payment decision with a person.
+The useful split is straightforward: let Nutrient read the files, let code handle the arithmetic, leave the payment decision with a person, and let Doctavian produce the document the supplier can act on.
 
 ## What is next
 
@@ -44,7 +48,7 @@ The useful split is straightforward: let the document service read the files, le
 - Duplicate invoice detection across packets
 - Approval routing based on dollar impact
 - ERP export after review
-- Signed approval certificates for completed audit packets
+- Supplier response tracking for generated acknowledgements
 
 ## Submission fields to complete
 
@@ -53,5 +57,5 @@ The useful split is straightforward: let the document service read the files, le
 - Project image: `output/devpost/clearpacket-cover.jpg`
 - Image gallery: `output/devpost/clearpacket-demo-overview.jpg` and `output/devpost/clearpacket-human-review.jpg`
 - Demo video: https://youtu.be/Rddunuh6of4
-- Sponsor challenge: Nutrient DWS Challenge
+- Sponsor challenges: Nutrient DWS Challenge and Doctavian Challenge
 - Team: solo

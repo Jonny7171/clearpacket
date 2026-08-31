@@ -106,9 +106,12 @@ h2 { margin: 0; font-size: 17px; letter-spacing: -0.025em; }
 .exception-head { display: flex; justify-content: space-between; align-items: center; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
 .exception-head b { padding: 4px 7px; border: 1px solid #c6ceda; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 .exception-card > p { margin: 17px 0; max-width: 470px; font-size: 14px; line-height: 1.45; font-weight: 700; letter-spacing: -0.02em; }
-.exception-actions { display: flex; align-items: center; gap: 13px; }
+.exception-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
 .exception-actions button { border: 1px solid #244780; border-radius: 5px; padding: 9px 12px; background: #294f8d; color: white; font-size: 10px; font-weight: 700; cursor: pointer; }
 .exception-actions .secondary-action { border: 1px solid #bfc7d4; background: #fff; color: #36445d; }
+.exception-actions .doctavian-action { border-color: #613cb0; background: #613cb0; }
+.exception-actions button:disabled { cursor: wait; opacity: 0.7; }
+.generator-note { display: block; margin-top: 10px; color: var(--muted); font-size: 9px; line-height: 1.4; }
 .decision-time { display: block; margin: -11px 0 17px; color: #506057; font-size: 9px; }
 footer { display: flex; justify-content: space-between; padding: 18px clamp(22px, 4vw, 68px) 28px; color: var(--muted); font-size: 10px; }
 footer p { margin: 0; color: #526078; font-weight: 600; }
