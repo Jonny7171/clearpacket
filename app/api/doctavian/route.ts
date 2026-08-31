@@ -59,7 +59,7 @@ async function accessToken(settings: DoctavianConfig) {
     refresh_token: settings.DOCTAVIAN_REFRESH_TOKEN,
     client_id: settings.DOCTAVIAN_CLIENT_ID,
   });
-  const provider = settings.DOCTAVIAN_AUTH_PROVIDER || 'google';
+  const provider = settings.DOCTAVIAN_AUTH_PROVIDER || 'microsoft';
   const response = await fetch(`${API_BASE}/public/v1/auth/${encodeURIComponent(provider)}/token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

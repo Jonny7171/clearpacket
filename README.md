@@ -49,6 +49,8 @@ The Doctavian route does real document work after the human decision:
 
 The app never accepts a typed credit amount. The $18.40 adjustment is recalculated on the server from 12 invoiced units, 10 received units, and the $9.20 unit price. The included template and sample data are in `assets/doctavian/`.
 
+Doctavian's hackathon collection currently defaults to Microsoft OAuth. Set `DOCTAVIAN_AUTH_PROVIDER` only if the sponsor assigns a different provider to the account.
+
 ## Foxit resolution agent
 
 After a person resolves an exception, the optional Foxit agent turns that decision into a supplier credit acknowledgement and creates an embedded human signing session.
